@@ -11,3 +11,6 @@ class ExchangeRate(models.Model):
         unique_together = [
             ["date", "currency", "base_currency"],
         ]
+
+    def __str__(self):
+        return f"Exchange Rate: {self.base_currency}-{self.currency} @ {self.date}: {self.rate}"
