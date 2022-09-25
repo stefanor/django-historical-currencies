@@ -3,6 +3,7 @@ import datetime
 
 from django.test import TestCase
 
+from currencies.choices import currency_choices
 from currencies.exchange import exchange
 from currencies.models import ExchangeRate
 
@@ -31,3 +32,23 @@ class ExchangeTestCase(TestCase):
         self.assertEqual(
             exchange(1, "EUR", "USD", date=datetime.date(2022, 1, 1)), Decimal("1.13")
         )
+
+
+class CurrencyChoicesTestCase(TestCase):
+    def test_expected_contents(self):
+        currencies = currency_choices()
+        self.assertIn(("EUR", "EUR (Euro)"), currencies)
+        self.assertIn(("USD", "USD (US Dollar)"), currencies)
+        self.assertIn(("ZAR", "ZAR (Rand)"), currencies)
+
+    def test_skips_x_currencies(self):
+        codes = [code for code, name in currency_choices()]
+        self.assertNotIn("XTS", codes)
+        self.assertNotIn("XXX", codes)
+        self.assertIn("XCD", codes)
+
+    def test_can_include_x_currencies(self):
+        codes = [code for code, name in currency_choices(exclude_special=False)]
+        self.assertIn("XTS", codes)
+        self.assertIn("XXX", codes)
+        self.assertIn("XCD", codes)
