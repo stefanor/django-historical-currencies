@@ -34,6 +34,9 @@ class ExchangeTestCase(TestCase):
             exchange(1, "EUR", "USD", date=datetime.date(2022, 1, 1)), Decimal("1.13")
         )
 
+    def test_without_date(self):
+        self.assertEqual(exchange(1, "EUR", "USD"), Decimal("1.13"))
+
 
 class CurrencyChoicesTestCase(TestCase):
     def test_expected_contents(self):

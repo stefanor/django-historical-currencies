@@ -1,5 +1,6 @@
 import datetime
 from decimal import Decimal
+from typing import Optional
 
 from currencies.models import ExchangeRate
 
@@ -7,11 +8,17 @@ TWOPLACES = Decimal(10) ** -2
 
 
 def exchange(
-    amount: Decimal, currency_from: str, currency_to: str, date: datetime.date
+    amount: Decimal,
+    currency_from: str,
+    currency_to: str,
+    date: Optional[datetime.date] = None,
 ) -> Decimal:
     """Exchange amount of currency_from to currency_to as of date"""
     # Currency amount is represented in
     currency = currency_from
+
+    if date is None:
+        date = datetime.date.today()
 
     last_rate = ExchangeRate.objects.filter(date__lte=date).order_by("-date").first()
     # Assumption: all relevent currencies present every day
