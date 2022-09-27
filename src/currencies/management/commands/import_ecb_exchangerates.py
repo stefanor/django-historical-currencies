@@ -1,10 +1,9 @@
-from urllib.request import urlopen
 import xml.etree.ElementTree as ET
+from urllib.request import urlopen
 
 from django.core.management.base import BaseCommand, CommandError
 
 from currencies.models import ExchangeRate
-
 
 NAMESPACE = {
     "eurofxref": "http://www.ecb.int/vocabulary/2002-08-01/eurofxref",
