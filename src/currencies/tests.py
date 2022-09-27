@@ -5,6 +5,7 @@ from django.test import TestCase
 
 from currencies.choices import currency_choices
 from currencies.exchange import exchange
+from currencies.formatting import render_amount
 from currencies.models import ExchangeRate
 
 
@@ -52,3 +53,11 @@ class CurrencyChoicesTestCase(TestCase):
         self.assertIn("XTS", codes)
         self.assertIn("XXX", codes)
         self.assertIn("XCD", codes)
+
+
+class CurrencyRenderTestCase(TestCase):
+    def test_renders_rand(self):
+        self.assertEqual(render_amount(Decimal(1000), "ZAR"), "1000.00 ZAR")
+
+    def test_renders_yen(self):
+        self.assertEqual(render_amount(Decimal(1000), "JPY"), "1000 JPY")
