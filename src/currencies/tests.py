@@ -25,6 +25,9 @@ class SimpleExchangeTestCase(TestCase):
             date=self.date, base_currency="EUR", currency="ZAR", rate=18.0625
         )
 
+    def test_can_noop_exchange(self):
+        self.assertEqual(exchange(1, "EUR", "EUR", date=self.date), Decimal("1"))
+
     def test_can_exchange_from_base(self):
         self.assertEqual(exchange(1, "EUR", "USD", date=self.date), Decimal("1.13"))
 

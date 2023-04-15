@@ -107,7 +107,12 @@ def exchange(
     if date is None:
         date = datetime.date.today()
 
-    rate_date, rate = latest_rate(currency_from, currency_to, date)
+    if currency_from == currency_to:
+        rate_date = date
+        rate = Decimal(1)
+    else:
+        rate_date, rate = latest_rate(currency_from, currency_to, date)
+
     amount *= rate
     if date - rate_date > datetime.timedelta(days=settings.MAX_EXCHANGE_RATE_AGE):
         raise ExchangeRateUnavailable(
