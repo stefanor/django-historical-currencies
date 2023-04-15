@@ -1,9 +1,14 @@
-from django import template
+import logging
 
+from django import template
+from django.utils.translation import gettext_lazy as _
+
+from currencies.exceptions import ExchangeRateUnavailable
 from currencies.exchange import exchange
 from currencies.formatting import render_amount
 
 register = template.Library()
+log = logging.getLogger(__name__)
 
 
 @register.filter
@@ -17,5 +22,11 @@ def currency(amount):
 def exchange_filter(amount, target_currency):
     """Exchange a tuple (amount, currency) to target_currency and format it"""
     amount, source_currency = amount
-    amount = exchange(amount, source_currency, target_currency)
+    try:
+        amount = exchange(amount, source_currency, target_currency)
+    except ExchangeRateUnavailable:
+        log.warning("Missing Exchange Rate: %s:%s", source_currency, target_currency)
+        return _("? (no rate) %(target_currency)s") % {
+            "target_currency": target_currency
+        }
     return render_amount(amount, target_currency)
