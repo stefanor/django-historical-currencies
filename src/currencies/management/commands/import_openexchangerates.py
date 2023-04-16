@@ -62,14 +62,16 @@ class Command(BaseCommand):
         if query is None:
             query = {}
         query["app_id"] = settings.OPEN_EXCHANGE_RATES_APP_ID
-        url = urlunparse((
-            "https",
-            "openexchangerates.org",
-            f"api/{endpoint}",
-            None,
-            urlencode(query),
-            None,
-        ))
+        url = urlunparse(
+            (
+                "https",
+                "openexchangerates.org",
+                f"api/{endpoint}",
+                None,
+                urlencode(query),
+                None,
+            )
+        )
         with urlopen(url) as f:
             if f.status != 200:
                 raise Exception("Request failed")
@@ -81,17 +83,25 @@ class Command(BaseCommand):
         requests_remaining = usage["usage"]["requests_remaining"]
         days_to_query = (end_date - start_date).days
         if days_to_query > requests_remaining:
-            raise Exception(f"Insufficient quota: days: {days_to_query}, "
-                            f"requests remaining: {requests_remaining}")
-        if (not self.plan["features"]["base"]
-                and settings.OPEN_EXCHANGE_RATES_BASE_CURRENCY != "USD"):
-            raise Exception("OpenExchangeRates plan doesn't support non-USD "
-                            "base currency")
+            raise Exception(
+                f"Insufficient quota: days: {days_to_query}, "
+                f"requests remaining: {requests_remaining}"
+            )
+        if (
+            not self.plan["features"]["base"]
+            and settings.OPEN_EXCHANGE_RATES_BASE_CURRENCY != "USD"
+        ):
+            raise Exception(
+                "OpenExchangeRates plan doesn't support non-USD " "base currency"
+            )
 
     def iter_historical_rates(self, day):
-        rates = self.oxr_request(f"historical/{day.isoformat()}.json", {
-            "base": settings.OPEN_EXCHANGE_RATES_BASE_CURRENCY,
-        })
+        rates = self.oxr_request(
+            f"historical/{day.isoformat()}.json",
+            {
+                "base": settings.OPEN_EXCHANGE_RATES_BASE_CURRENCY,
+            },
+        )
         for currency, rate in rates["rates"].items():
             yield ExchangeRate(
                 date=day,
@@ -101,11 +111,14 @@ class Command(BaseCommand):
             )
 
     def iter_time_series_rates(self, start_date, end_date):
-        historic_rates = self.oxr_request("time-series.json", {
-            "start": start_date.isoformat(),
-            "end": end_date.isoformat(),
-            "base": settings.OPEN_EXCHANGE_RATES_BASE_CURRENCY,
-        })
+        historic_rates = self.oxr_request(
+            "time-series.json",
+            {
+                "start": start_date.isoformat(),
+                "end": end_date.isoformat(),
+                "base": settings.OPEN_EXCHANGE_RATES_BASE_CURRENCY,
+            },
+        )
         # FIXME: Untested
         for day, rates in historic_rates["rates"].items():
             for currency, rate in rates.items():
@@ -118,18 +131,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         yesterday = date.today() - timedelta(days=1)
-        if options['yesterday']:
+        if options["yesterday"]:
             daterange = (yesterday, yesterday)
-        elif options['update']:
-            latest = ExchangeRate.objects.all().order_by('-date').first()
+        elif options["update"]:
+            latest = ExchangeRate.objects.all().order_by("-date").first()
             if latest.date >= yesterday:
                 print("Already up to date")
                 return
             daterange = (latest.date + timedelta(days=1), yesterday)
-        elif options['since']:
-            daterange = (options['since'], yesterday)
-        elif options['date']:
-            daterange = (options['date'], options['date'])
+        elif options["since"]:
+            daterange = (options["since"], yesterday)
+        elif options["date"]:
+            daterange = (options["date"], options["date"])
         else:
             raise CommandError("No date range specified")
 
