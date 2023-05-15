@@ -2,7 +2,7 @@ import datetime
 from decimal import Decimal
 from unittest import mock
 
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 
 import currencies.exchange  # imported for mock patching # noqa: F401
 from currencies.choices import currency_choices
@@ -121,7 +121,7 @@ class ComplexExchangeTestCase(TestCase):
             exchange(1, "ZAR", "AUD", date=self.date_1)
 
 
-class CurrencyChoicesTestCase(TestCase):
+class CurrencyChoicesTestCase(SimpleTestCase):
     def test_expected_contents(self):
         choices = currency_choices()
         self.assertIn(("EUR", "EUR (Euro)"), choices)
