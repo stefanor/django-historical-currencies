@@ -1,29 +1,14 @@
 import datetime
 from decimal import Decimal
-from io import StringIO
 from unittest import mock
 
-from django.core.management import call_command
-from django.template import Context, Template
-from django.test import SimpleTestCase, TestCase, tag
+from django.test import SimpleTestCase, TestCase
 
 import historical_currencies.exchange  # imported for mock patching # noqa: F401
 from historical_currencies.choices import currency_choices
 from historical_currencies.exceptions import ExchangeRateUnavailable
 from historical_currencies.exchange import exchange, latest_rate, _possible_base_currencies
-from historical_currencies.formatting import render_amount
-from historical_currencies.models import ExchangeRate, check_fresh_exchange_rate_data
-
-
-class ExchangeRateObjectTestCase(SimpleTestCase):
-    def test_str_method(self):
-        er = ExchangeRate(
-            date=datetime.date(2021, 12, 31),
-            base_currency="EUR",
-            currency="USD",
-            rate=1.1326,
-        )
-        self.assertEqual(str(er), "Exchange Rate: EUR-USD @ 2021-12-31: 1.1326")
+from historical_currencies.models import ExchangeRate
 
 
 class SimpleExchangeTestCase(TestCase):
@@ -153,79 +138,3 @@ class CurrencyChoicesTestCase(SimpleTestCase):
         self.assertIn("XTS", codes)
         self.assertIn("XXX", codes)
         self.assertIn("XCD", codes)
-
-
-class CurrencyRenderTestCase(SimpleTestCase):
-    def test_renders_rand(self):
-        self.assertEqual(render_amount(Decimal(1000), "ZAR"), "1000.00 ZAR")
-
-    def test_renders_yen(self):
-        self.assertEqual(render_amount(Decimal(1000), "JPY"), "1000 JPY")
-
-
-class TemplateTagTestCase(TestCase):
-    def render_template(self, body, context, load_currency_format=True):
-        if isinstance(context, dict):
-            context = Context(context)
-        if load_currency_format:
-            body = "{% load currency_format %}" + body
-        return Template(body).render(context)
-
-    def test_currency_filter(self):
-        rendered = self.render_template(
-            "{{ ben|currency }}", {"ben": (Decimal(100), "USD")}
-        )
-        self.assertEqual(rendered, "100.00 USD")
-
-    def test_exchange_filter_with_rate(self):
-        date = datetime.date.today()
-        ExchangeRate.objects.create(
-            date=date, base_currency="EUR", currency="USD", rate=1.1326
-        )
-        rendered = self.render_template(
-            "{{ eur|exchange:'USD' }}", {"eur": (Decimal(1), "EUR")}
-        )
-        self.assertEqual(rendered, "1.13 USD")
-
-    def test_exchange_filter_missing_rate(self):
-        with self.assertLogs(
-            "historical_currencies.templatetags.currency_format",
-            level="WARNING",
-        ) as cm:
-            rendered = self.render_template(
-                "{{ eur|exchange:'USD' }}", {"eur": (Decimal(1), "EUR")}
-            )
-        self.assertEqual(rendered, "? (no rate) USD")
-        self.assertEqual(len(cm.records), 1)
-        log = cm.records[0]
-        self.assertEqual(log.message, "Missing Exchange Rate: EUR:USD")
-
-
-class CurrencyFreshnessCheckTestCase(TestCase):
-    def test_fails_when_exchange_data_is_stale(self):
-        errors = check_fresh_exchange_rate_data(None)
-        self.assertEqual(len(errors), 1)
-        error = errors[0]
-        self.assertEqual(error.level, 40)
-        self.assertEqual(error.msg, "no current exchange rates")
-
-    def test_passes_when_exchange_data_is_fresh(self):
-        date = datetime.date.today()
-        ExchangeRate.objects.create(
-            date=date, base_currency="EUR", currency="USD", rate=1.1326
-        )
-        errors = check_fresh_exchange_rate_data(None)
-        self.assertEqual(errors, [])
-
-
-@tag("internet")
-class ManagementCommandTestCase(TestCase):
-    def test_ecb_daily_import(self):
-        last_week = datetime.date.today() - datetime.timedelta(days=7)
-        rates = ExchangeRate.objects.filter(
-            currency="USD", base_currency="EUR", date__gte=last_week
-        )
-        self.assertFalse(rates.exists())
-        out = StringIO()
-        call_command("import_ecb_exchangerates", "--daily", stdout=out)
-        self.assertTrue(rates.exists())
