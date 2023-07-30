@@ -10,7 +10,7 @@ authors = [
 description = "Django currencies with historical exchange rates"
 readme = "README.md"
 requires-python = ">=3.7"
-keywords = ["one", "two"]
+keywords = ["django", "currencies", "exchange", "xe"]
 license = {file = "LICENSE"}
 classifiers = [
     "Framework :: Django",
