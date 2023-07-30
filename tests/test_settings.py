@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 TESTS_DIR = Path(__file__).resolve().parent
@@ -24,3 +25,6 @@ TEMPLATES = [
 ]
 
 MAX_EXCHANGE_RATE_AGE = 30
+
+OPEN_EXCHANGE_RATES_APP_ID = os.environ.get("OPEN_EXCHANGE_RATES_APP_ID", "")
+OPEN_EXCHANGE_RATES_BASE_CURRENCY = "USD"
