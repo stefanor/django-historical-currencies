@@ -39,6 +39,7 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
+        allow-prereleases: true
         python-version: ${{ matrix.python-version }}
     - name: Install Dependencies
       continue-on-error: ${{ matrix.django-version == 'main' }}
