@@ -9,11 +9,6 @@ from django.utils.dateparse import parse_date
 
 from historical_currencies.models import ExchangeRate
 
-NAMESPACE = {
-    "eurofxref": "http://www.ecb.int/vocabulary/2002-08-01/eurofxref",
-    "gesmes": "http://www.gesmes.org/xml/2002-08-01",
-}
-
 
 class Command(BaseCommand):
     help = "Import daily or historical exchange rate data from the ECB"
