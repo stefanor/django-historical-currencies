@@ -11,7 +11,7 @@ from historical_currencies.models import ExchangeRate
 
 
 class Command(BaseCommand):
-    help = "Import daily or historical exchange rate data from the ECB"
+    help = "Import daily or historical exchange rate data from OpenExchangeRates.org"
 
     def add_arguments(self, parser):
         daterange = parser.add_mutually_exclusive_group()
