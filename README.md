@@ -40,6 +40,30 @@ Optional settings, only required for OpenExchangeRates.org import:
 * `OPEN_EXCHANGE_RATES_APP_ID`: OpenExchangeRates App ID.
 * `OPEN_EXCHANGE_RATES_BASE_CURRENCY`: Base currency.
 
+## Usage
+
+In code, amounts can be converted using the
+`historical_currencies.exchange.exchange()` method.
+
+In templates, this module represents financial amounts as tuple of
+`(Decimal, str(currency-code))`. The recommended approach is to add
+properties to your Django models to return this tuple for amounts.
+
+In a template the amount can be displayed or converted:
+
+```
+{% load currency_format %}
+
+Assuming my_amount = (Decimal(10), 'USD')
+Display:
+{{ my_amount|currency }}
+-> 10.00 USD
+
+Exchange at the latest rate:
+{{ my_amount|exchange:"EUR" }}
+-> 9.06 EUR
+```
+
 ## License
 
 This Django app is available under the terms of the ISC license, see
