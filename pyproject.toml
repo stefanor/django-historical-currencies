@@ -22,6 +22,10 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.urls]
+Repository = "https://github.com/stefanor/django-historical-currencies/"
+Changelog = "https://github.com/stefanor/django-historical-currencies/blob/master/CHANGELOG.md"
+
 [tool.setuptools]
 packages = ["historical_currencies"]
 
