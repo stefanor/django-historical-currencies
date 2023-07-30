@@ -3,9 +3,9 @@ import logging
 from django import template
 from django.utils.translation import gettext_lazy as _
 
-from currencies.exceptions import ExchangeRateUnavailable
-from currencies.exchange import exchange
-from currencies.formatting import render_amount
+from historical_currencies.exceptions import ExchangeRateUnavailable
+from historical_currencies.exchange import exchange
+from historical_currencies.formatting import render_amount
 
 register = template.Library()
 log = logging.getLogger(__name__)

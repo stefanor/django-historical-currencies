@@ -7,12 +7,12 @@ from django.core.management import call_command
 from django.template import Context, Template
 from django.test import SimpleTestCase, TestCase, tag
 
-import currencies.exchange  # imported for mock patching # noqa: F401
-from currencies.choices import currency_choices
-from currencies.exceptions import ExchangeRateUnavailable
-from currencies.exchange import exchange, latest_rate, _possible_base_currencies
-from currencies.formatting import render_amount
-from currencies.models import ExchangeRate, check_fresh_exchange_rate_data
+import historical_currencies.exchange  # imported for mock patching # noqa: F401
+from historical_currencies.choices import currency_choices
+from historical_currencies.exceptions import ExchangeRateUnavailable
+from historical_currencies.exchange import exchange, latest_rate, _possible_base_currencies
+from historical_currencies.formatting import render_amount
+from historical_currencies.models import ExchangeRate, check_fresh_exchange_rate_data
 
 
 class ExchangeRateObjectTestCase(SimpleTestCase):
@@ -65,7 +65,7 @@ class SimpleExchangeTestCase(TestCase):
             with self.assertRaises(ExchangeRateUnavailable):
                 exchange(1, "EUR", "USD", date=datetime.date(2022, 2, 1))
 
-    @mock.patch("currencies.exchange.latest_rate")
+    @mock.patch("historical_currencies.exchange.latest_rate")
     def test_without_date(self, latest_rate):
         today = datetime.date.today()
         yesterday = today - datetime.timedelta(days=1)
@@ -189,7 +189,7 @@ class TemplateTagTestCase(TestCase):
 
     def test_exchange_filter_missing_rate(self):
         with self.assertLogs(
-            "currencies.templatetags.currency_format",
+            "historical_currencies.templatetags.currency_format",
             level="WARNING",
         ) as cm:
             rendered = self.render_template(

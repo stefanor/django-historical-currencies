@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.dateparse import parse_date
 
-from currencies.models import ExchangeRate
+from historical_currencies.models import ExchangeRate
 
 NAMESPACE = {
     "eurofxref": "http://www.ecb.int/vocabulary/2002-08-01/eurofxref",

@@ -6,8 +6,8 @@ from typing import Iterator, List, Optional, Tuple
 from django.db.models import Q
 from django.conf import settings
 
-from currencies.exceptions import ExchangeRateUnavailable
-from currencies.models import ExchangeRate
+from historical_currencies.exceptions import ExchangeRateUnavailable
+from historical_currencies.models import ExchangeRate
 
 TWOPLACES = Decimal(10) ** -2
 

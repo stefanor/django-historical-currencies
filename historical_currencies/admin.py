@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from currencies.models import ExchangeRate
+from historical_currencies.models import ExchangeRate
 
 
 @admin.register(ExchangeRate)
