@@ -17,9 +17,7 @@ def render_template(body, context, load_currency_format=True):
 
 class CurrencyTagTestCase(SimpleTestCase):
     def test_currency_filter(self):
-        rendered = render_template(
-            "{{ ben|currency }}", {"ben": (Decimal(100), "USD")}
-        )
+        rendered = render_template("{{ ben|currency }}", {"ben": (Decimal(100), "USD")})
         self.assertEqual(rendered, "100.00 USD")
 
 

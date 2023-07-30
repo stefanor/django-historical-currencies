@@ -7,7 +7,11 @@ from django.test import SimpleTestCase, TestCase
 import historical_currencies.exchange  # imported for mock patching # noqa: F401
 from historical_currencies.choices import currency_choices
 from historical_currencies.exceptions import ExchangeRateUnavailable
-from historical_currencies.exchange import exchange, latest_rate, _possible_base_currencies
+from historical_currencies.exchange import (
+    exchange,
+    latest_rate,
+    _possible_base_currencies,
+)
 from historical_currencies.models import ExchangeRate
 
 
