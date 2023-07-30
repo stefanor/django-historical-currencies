@@ -1,0 +1,8 @@
+!/.github/
+!/.gitignore
+*~
+.*
+/dist/
+/tests/db.sqlite
+/ve/
+__pycache__/
