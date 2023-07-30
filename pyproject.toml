@@ -24,3 +24,6 @@ dynamic = ["version"]
 
 [tool.setuptools]
 packages = ["historical_currencies"]
+
+[tool.setuptools.dynamic]
+version = {attr = "historical_currencies.__version__"}
