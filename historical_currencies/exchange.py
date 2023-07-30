@@ -1,5 +1,5 @@
 import datetime
-from functools import cache, lru_cache
+from functools import lru_cache
 from decimal import Decimal
 from typing import Iterator, List, Optional, Tuple
 
@@ -11,8 +11,13 @@ from historical_currencies.models import ExchangeRate
 
 TWOPLACES = Decimal(10) ** -2
 
+try:
+    from functools import cache
+except ImportError:  # Python < 3.9
+    cache = lru_cache(maxsize=None)
 
-@lru_cache
+
+@lru_cache()
 def latest_rate(
     currency_from: str,
     currency_to: str,
