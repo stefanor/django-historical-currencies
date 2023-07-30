@@ -141,7 +141,7 @@ class CurrencyChoicesTestCase(SimpleTestCase):
         self.assertIn("XCD", codes)
 
 
-class CurrencyRenderTestCase(TestCase):
+class CurrencyRenderTestCase(SimpleTestCase):
     def test_renders_rand(self):
         self.assertEqual(render_amount(Decimal(1000), "ZAR"), "1000.00 ZAR")
 
