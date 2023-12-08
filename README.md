@@ -16,9 +16,10 @@ rates.
 Formatting is defined by [`iso4217`](https://pypi.org/project/iso4217/).
 Exchange Rate data can be sourced from:
 
-* The [European ECB Reference Rates](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)
-* [openexchangerates.org](https://openexchangerates.org/) (requires free
-  registration)
+* The [European ECB Reference Rates](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html).
+  Public, provides rates for 41 currencies against EUR.
+* [openexchangerates.org](https://openexchangerates.org/).
+  Requires (free) registration, provides 169 currencies against USD.
 
 ## Installation
 
