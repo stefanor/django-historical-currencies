@@ -1,1 +1,2 @@
-LICENSE
+include LICENSE
+recursive-include historical_currencies/templates/ *.html
