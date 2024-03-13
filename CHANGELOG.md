@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.2post1
+
+* Include the template required by `{% currency_choices_options %}` in
+  the Python package.
+
 ## 0.0.2
 
 * Add `currency_choices` template tags for rendering currency selectors.
