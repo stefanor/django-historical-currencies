@@ -65,6 +65,21 @@ Exchange at the latest rate:
 -> 9.06 EUR
 ```
 
+### Currency Selectors:
+
+There is a template tag to help render currency selectors:
+
+```
+{% load currency_choices %}
+
+<select>
+  {% currency_choices_list as currency_choices %}
+  {% for code, name in currency_choices %}
+    <option value="{{ code }}">{{ name }}</option>
+  {% endfor %}
+</select>
+```
+
 ## License
 
 This Django app is available under the terms of the ISC license, see

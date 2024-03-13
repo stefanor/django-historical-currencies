@@ -4,6 +4,8 @@ from decimal import Decimal
 from django.template import Context, Template
 from django.test import SimpleTestCase, TestCase
 
+from iso4217 import Currency
+
 from historical_currencies.models import ExchangeRate
 
 
@@ -46,3 +48,23 @@ class ExchangeRateTagTestCase(TestCase):
         self.assertEqual(len(cm.records), 1)
         log = cm.records[0]
         self.assertEqual(log.message, "Missing Exchange Rate: EUR:USD")
+
+
+class CurrencyChoicesListTagTestCase(SimpleTestCase):
+    def render(self, body, context):
+        if isinstance(context, dict):
+            context = Context(context)
+        body = "{% load currency_choices %}" + body
+        return Template(body).render(context)
+
+    def test_currency_choices_list(self):
+        rendered = self.render(
+            "{% currency_choices_list as choices %}"
+            "{% for code, name in choices %}"
+            "[{{ code }}] {{ name }}\n"
+            "{% endfor %}",
+            {},
+        )
+        lines = rendered.splitlines()
+        self.assertTrue(len(lines) > 10)
+        self.assertIn(f"[USD] USD ({Currency('USD').currency_name})", lines)
