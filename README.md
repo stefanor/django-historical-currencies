@@ -67,7 +67,18 @@ Exchange at the latest rate:
 
 ### Currency Selectors:
 
-There is a template tag to help render currency selectors:
+There are two template tags to help render currency selectors. A
+high-level one that renders HTML:
+
+```
+{% load currency_choices %}
+
+<select>
+  {% currency_choices_options selected="USD" %}
+</select>
+```
+
+And a low-level one that returns a list of currencies:
 
 ```
 {% load currency_choices %}

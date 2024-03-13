@@ -68,3 +68,25 @@ class CurrencyChoicesListTagTestCase(SimpleTestCase):
         lines = rendered.splitlines()
         self.assertTrue(len(lines) > 10)
         self.assertIn(f"[USD] USD ({Currency('USD').currency_name})", lines)
+
+
+class CurrencyChoicesOptionsTagTestCase(SimpleTestCase):
+    def render(self, body, context):
+        if isinstance(context, dict):
+            context = Context(context)
+        body = "{% load currency_choices %}" + body
+        return Template(body).render(context)
+
+    def test_currency_choices_options(self):
+        rendered = self.render("{% currency_choices_options %}\n", {})
+        self.assertInHTML(
+            f'<option value="USD">USD ({Currency("USD").currency_name})</option>',
+            rendered,
+        )
+
+    def test_currency_choices_options_selected(self):
+        rendered = self.render("{% currency_choices_options selected='USD' %}\n", {})
+        self.assertInHTML(
+            f'<option value="USD" selected>USD ({Currency("USD").currency_name})</option>',
+            rendered,
+        )
