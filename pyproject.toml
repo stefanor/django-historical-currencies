@@ -31,3 +31,12 @@ include = ["historical_currencies*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "historical_currencies.__version__"}
+
+[tool.mypy]
+plugins = [
+    "mypy_django_plugin.main",
+]
+
+[tool.django-stubs]
+django_settings_module = "tests.test_settings"
+strict_settings = false
