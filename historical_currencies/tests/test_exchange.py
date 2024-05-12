@@ -15,6 +15,19 @@ from historical_currencies.exchange import (
 from historical_currencies.models import ExchangeRate
 
 
+class LatestRateTestCase(TestCase):
+    date = datetime.date(2021, 12, 31)
+
+    def setUp(self):
+        latest_rate.cache_clear()
+
+    def test_latest_rate_noop(self):
+        self.assertEqual(
+            latest_rate("EUR", "EUR", self.date),
+            (self.date, Decimal(1)),
+        )
+
+
 class SimpleExchangeTestCase(TestCase):
     date = datetime.date(2021, 12, 31)
 
