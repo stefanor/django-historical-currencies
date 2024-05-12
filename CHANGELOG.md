@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.3
+
+* `exchange.latest_rate`: Always return 1 if the source and target
+  currencies are identical.
+* Declare that we are typed (and run mypy in CI).
+
 ## 0.0.2post1
 
 * Include the template required by `{% currency_choices_options %}` in
