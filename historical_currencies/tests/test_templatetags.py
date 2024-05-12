@@ -3,7 +3,6 @@ from decimal import Decimal
 
 from django.template import Context, Template
 from django.test import SimpleTestCase, TestCase
-
 from iso4217 import Currency
 
 from historical_currencies.models import ExchangeRate
