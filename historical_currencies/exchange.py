@@ -22,7 +22,7 @@ def latest_rate(
     currency_from: str,
     currency_to: str,
     date: datetime.date,
-) -> (datetime.date, Decimal):
+) -> Tuple[datetime.date, Decimal]:
     """The latest exchange rate from currency_from to currency_to as of date.
 
     currency_from and currency_to must have a direct conversion available
@@ -80,7 +80,7 @@ def _iter_available_rates(
         rate_date = None
         rate_from = None
         rate_to = None
-        for rate in (
+        for ex_rate in (
             ExchangeRate.objects.filter(
                 date__lte=date, date__gte=oldest_acceptable_rate
             )
@@ -90,16 +90,18 @@ def _iter_available_rates(
             )
             .order_by("-date")
         ):
-            if rate_date != rate.date:
-                rate_date = rate.date
-                rate_from = rate.rate if rate.currency == currency_from else None
-                rate_to = rate.rate if rate.currency == currency_to else None
-            elif rate.currency == currency_from and rate_to is not None:
-                rate_from = rate.rate
+            if rate_date != ex_rate.date:
+                rate_date = ex_rate.date
+                rate_from = ex_rate.rate if ex_rate.currency == currency_from else None
+                rate_to = ex_rate.rate if ex_rate.currency == currency_to else None
+            elif ex_rate.currency == currency_from and rate_to is not None:
+                rate_from = ex_rate.rate
+                assert rate_date is not None
                 yield rate_date, rate_to / rate_from
                 continue
-            elif rate.currency == currency_to and rate_from is not None:
-                rate_to = rate.rate
+            elif ex_rate.currency == currency_to and rate_from is not None:
+                rate_to = ex_rate.rate
+                assert rate_date is not None
                 yield rate_date, rate_to / rate_from
                 continue
 
