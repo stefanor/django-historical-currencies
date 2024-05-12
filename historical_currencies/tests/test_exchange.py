@@ -15,6 +15,19 @@ from historical_currencies.exchange import (
 from historical_currencies.models import ExchangeRate
 
 
+class LatestRateTestCase(TestCase):
+    date = datetime.date(2021, 12, 31)
+
+    def setUp(self):
+        latest_rate.cache_clear()
+
+    def test_latest_rate_noop(self):
+        self.assertEqual(
+            latest_rate("EUR", "EUR", self.date),
+            (self.date, Decimal(1)),
+        )
+
+
 class SimpleExchangeTestCase(TestCase):
     date = datetime.date(2021, 12, 31)
 
@@ -50,6 +63,13 @@ class SimpleExchangeTestCase(TestCase):
             exchange(1, "EUR", "USD", date=datetime.date(2021, 12, 30))
 
     def test_raises_exception_with_old_data(self):
+        with self.settings(MAX_EXCHANGE_RATE_AGE=30):
+            with self.assertRaises(ExchangeRateUnavailable):
+                exchange(1, "EUR", "USD", date=datetime.date(2022, 2, 1))
+
+    @mock.patch("historical_currencies.exchange.latest_rate")
+    def test_raises_exception_with_cached_old_data(self, latest_rate):
+        latest_rate.return_value = (self.date, Decimal(1.1326))
         with self.settings(MAX_EXCHANGE_RATE_AGE=30):
             with self.assertRaises(ExchangeRateUnavailable):
                 exchange(1, "EUR", "USD", date=datetime.date(2022, 2, 1))

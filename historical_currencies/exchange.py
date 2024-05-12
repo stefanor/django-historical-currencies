@@ -27,6 +27,8 @@ def latest_rate(
 
     currency_from and currency_to must have a direct conversion available
     """
+    if currency_from == currency_to:
+        return (date, Decimal(1))
     rates = list(_iter_available_rates(currency_from, currency_to, date))
     rates.sort(reverse=True)
     if not rates:
@@ -112,7 +114,7 @@ def exchange(
     if date is None:
         date = datetime.date.today()
 
-    if currency_from == currency_to:
+    if currency_from == currency_to:  # No need to pollute the latest_rate cache
         rate_date = date
         rate = Decimal(1)
     else:
