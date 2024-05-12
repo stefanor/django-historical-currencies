@@ -68,6 +68,13 @@ class SimpleExchangeTestCase(TestCase):
                 exchange(1, "EUR", "USD", date=datetime.date(2022, 2, 1))
 
     @mock.patch("historical_currencies.exchange.latest_rate")
+    def test_raises_exception_with_cached_old_data(self, latest_rate):
+        latest_rate.return_value = (self.date, Decimal(1.1326))
+        with self.settings(MAX_EXCHANGE_RATE_AGE=30):
+            with self.assertRaises(ExchangeRateUnavailable):
+                exchange(1, "EUR", "USD", date=datetime.date(2022, 2, 1))
+
+    @mock.patch("historical_currencies.exchange.latest_rate")
     def test_without_date(self, latest_rate):
         today = datetime.date.today()
         yesterday = today - datetime.timedelta(days=1)
