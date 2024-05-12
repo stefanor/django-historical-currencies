@@ -15,6 +15,7 @@ license = {text = "ISC"}
 classifiers = [
     "Framework :: Django",
     "Programming Language :: Python :: 3",
+    "Typing :: Typed",
 ]
 dependencies = [
     'django',
